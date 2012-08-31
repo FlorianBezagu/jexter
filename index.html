@@ -1,0 +1,105 @@
+<html>
+<head>
+  <title>JS RegExp Tester</title>
+  <style type="text/css">
+  #preview span {
+    color:#0066B3; background-color:#BFE4FF;
+  }
+  </style>
+</head>
+<body style="background-color: #777; color:#4D3838; font-weight:bold; font-size: 17px; margin-left: -490px; position: absolute; left:50%; font-family: monaco, courier;">
+  <form>
+    
+    <div style="float:left; margin:10px; font-weight:bold; font-size: 35px; color:#ddd;">
+      /
+    </div>
+    <div style="float:left; width:750px; margin:10px">
+      <input id="regex" type="text" placeholder="Right your RegExp here" style="width:100%; padding: 10px; border: 1px solid #fff; background-color:#000; color: #eee; font-weight:bold; font-size: 17px; font-family: monaco, courier;">
+    </div>
+    <div style="float:left; margin:10px; font-weight:bold; font-size: 35px; color:#ddd;">
+      /
+    </div>
+    <div style="float:left; width:100px; margin:10px">
+      <input id="flags" type="text" style="width:100%; padding: 10px; border: 1px solid #fff; background-color:#000; color: #eee; font-weight:bold; font-size: 17px;" value="g">
+    </div>
+    <div style="clear: both;"></div>
+    <br>
+    <div style="float:left; width:470px; margin:10px; height: 200px;">
+      <div style="color:#ddd;">Your test string :</div>
+      <textarea id="text" resizable="0" style="font-size:14px; font-weight: bold; width:100%; height: 100%; padding: 10px; border: 1px solid #fff; background-color:#000; color: #eee;"></textarea>
+    </div>
+    <div id="output" style="float:left; width:470px; padding:10px;">
+      <div style="color:#ddd;">Match result :</div>
+      <div id="preview" style="margin-bottom:10px; padding: 10px; border: 1px solid #fff; background-color:#000; color: #ddd; min-height:100px"></div>
+      <div style="color:#ddd;">Match groups :</div>
+      <div id="result" style="margin-bottom:10px; padding: 15px; border: 1px solid #fff; background-color:#000; color: #ddd; min-height:100px"></div>
+    </div>
+    <div id="error" style="display:none; border:10px solid #D37979; background-color:#FDD2D2; color: #4D3838; float:left; width:470px; padding:10px; margin-top: 80px; text-align:center;"></div>
+  </form>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+      function makeRegex(){
+        var _regexUser = $('#regex').val();
+        var _text = $('#text').val();
+        var _flags = $('#flags').val();
+        var _result = $('#result');
+        var _preview = $('#preview');
+        if(_regexUser === '' || _text === ''){
+          _result.html('');
+          _preview.html('');
+        }
+        else{
+          try{
+            _regex = new RegExp(_regexUser, _flags);
+            var _html = '';
+            $('#error').html('').hide();
+            $('#output').show();
+            if(!_text.match(_regex) || _text.match(_regex).join('') === ''){
+              _result.html('');
+              _preview.html('');
+            }
+            else{
+              var _previewTxt = _text;
+              var _counter = 0;
+              var _previewOutput = '';
+              _previewTxt = _previewTxt.replace(_regex, function(){
+                _counter++;
+                if(arguments.length > 3){
+                  _html += '<div style="color:#84BDE7; margin-top: 8px; margin-bottom: 8px;">Match ' + _counter + '</div>';
+                }
+                for (var j = 1; j < arguments.length-2; j++) {
+                  var _match = (typeof arguments[j] !== 'undefined') ? arguments[j] : '';
+                  _html += j + '.&nbsp;&nbsp;' + _match + '<br>';
+                }
+                return '<span>' + arguments[0] + '</span>';
+              });
+
+              _previewTxt = _previewTxt
+                  .replace(/\n/g, '<br>')
+                  .replace(/ /g, '&nbsp;');
+              _result.html(_html);
+              _preview.html(_previewTxt);
+            }
+          }
+          catch(e){
+            var _split = e.toString().split(': ');
+            var _error = _split[_split.length-1];
+            $('#output').hide();
+            $('#error').html(_error).show();
+            return false;
+          }
+
+        }
+      };
+      jQuery(function(){
+        $('#regex, #text, #flags').on('keyup', function(e){
+          makeRegex();
+          return false;
+        });
+        $('form').on('submit', function(){
+          return false;
+        });
+      });
+    </script>
+</body>
+</html>

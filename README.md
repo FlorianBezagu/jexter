@@ -1,4 +1,4 @@
 jexter
 ======
 
-jexter is a JavaScript Regular Expression tester online
+Jexter is an online JavaScript Regular Expression tester
