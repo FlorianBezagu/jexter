@@ -66,17 +66,21 @@
               var _previewTxt = _text;
               var _counter = 0;
               var _previewOutput = '';
-              _previewTxt = _previewTxt.replace(_regex, function(){
-                _counter++;
-                if(arguments.length > 3){
-                  _html += '<div style="color:#84BDE7; margin-top: 8px; margin-bottom: 8px;">Match ' + _counter + '</div>';
+              _previewTxt = _previewTxt
+                .replace(/>/g, '&gt;')
+                .replace(/</g, '&lt;')
+                .replace(_regex, function(){
+                  _counter++;
+                  if(arguments.length > 3){
+                    _html += '<div style="color:#84BDE7; margin-top: 8px; margin-bottom: 8px;">Match ' + _counter + '</div>';
+                  }
+                  for (var j = 1; j < arguments.length-2; j++) {
+                    var _match = (typeof arguments[j] !== 'undefined') ? arguments[j] : '';
+                    _html += j + '.&nbsp;&nbsp;' + _match + '<br>';
+                  }
+                  return '<span>' + arguments[0] + '</span>';
                 }
-                for (var j = 1; j < arguments.length-2; j++) {
-                  var _match = (typeof arguments[j] !== 'undefined') ? arguments[j] : '';
-                  _html += j + '.&nbsp;&nbsp;' + _match + '<br>';
-                }
-                return '<span>' + arguments[0] + '</span>';
-              });
+              );
 
               _previewTxt = _previewTxt
                   .replace(/\n/g, '<br>')
